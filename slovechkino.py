@@ -1,7 +1,8 @@
 import pandas as pd
-import itertools
 import tkinter as tk
 from tkinter import messagebox, scrolledtext
+from collections import Counter
+
 
 # Загружаем словарь существительных
 try:
@@ -12,17 +13,27 @@ except Exception as e:
     exit()
 
 def find_words_from_set(letters: str, word_set: set) -> dict:
+    """
+    Находит все слова из word_set, которые можно составить из введённых букв.
+    Результаты группируются по длине слова.
+    """
     letters = letters.lower()
+    letters_counter = Counter(letters)
     results_by_length = {}
 
-    for length in range(2, len(letters) + 1):
-        words_this_length = set()
-        for combo in itertools.permutations(letters, length):
-            candidate = ''.join(combo)
-            if candidate in word_set:
-                words_this_length.add(candidate)
-        if words_this_length:
-            results_by_length[length] = sorted(words_this_length)
+    for word in word_set:
+        word_lower = word.lower()
+        if not word_lower.isalpha():
+            continue  # пропускаем "слова" с цифрами или спецсимволами
+
+        word_counter = Counter(word_lower)
+        # проверяем, можно ли составить слово из букв
+        if not (word_counter - letters_counter):
+            results_by_length.setdefault(len(word_lower), []).append(word_lower)
+
+    # сортируем слова в каждой группе
+    for length in results_by_length:
+        results_by_length[length] = sorted(results_by_length[length])
 
     return results_by_length
 
