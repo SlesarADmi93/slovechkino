@@ -37,7 +37,7 @@ def find_words_from_set(letters: str, word_set: set) -> dict:
 
     return results_by_length
 
-def on_find_words():
+def on_find_words(event=None):
     input_letters = entry.get().strip()
     if not input_letters.isalpha():
         messagebox.showwarning("Некорректный ввод", "Введите только буквы, без пробелов и цифр.")
@@ -66,6 +66,7 @@ label.pack(pady=5)
 
 entry = tk.Entry(root, font=("Arial", 14), justify="center")
 entry.pack(pady=5)
+entry.bind("<Return>", on_find_words)
 
 button = tk.Button(root, text="Найти слова", command=on_find_words)
 button.pack(pady=5)
